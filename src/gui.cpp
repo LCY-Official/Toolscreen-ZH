@@ -3346,6 +3346,34 @@ void RenderSettingsGUI() {
         }
 
         {
+            int currentLangIndex = 0;
+            for (size_t i = 0; i < std::size(TOOLSCREEN_LANGS); ++i) {
+                if (g_config.lang == TOOLSCREEN_LANGS[i]) {
+                    currentLangIndex = static_cast<int>(i);
+                    break;
+                }
+            }
+            ImGui::SetNextItemWidth(80);
+            if (ImGui::Combo("##Language", &currentLangIndex, TOOLSCREEN_LANGS, std::size(TOOLSCREEN_LANGS))) {
+                g_config.lang   = TOOLSCREEN_LANGS[currentLangIndex];
+                g_configIsDirty = true;
+
+                ImGui::OpenPopup(trc("restart_required"));
+            }
+        }
+
+        if (ImGui::BeginPopup(trc("restart_required"))) {
+            ImGui::Text("%s", trc("restart_required.text"));
+            if (ImGui::Button(trc("button.restart_now"))) {
+                exit(0);
+            }
+            if (ImGui::Button(trc("button.restart_later"))) {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+
+        {
             bool isAdvanced = !g_config.basicModeEnabled;
             if (ImGui::RadioButton(trc("config_mode.basic"), !isAdvanced)) {
                 g_config.basicModeEnabled = true;

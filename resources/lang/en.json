@@ -510,5 +510,9 @@
     "modes.add_new_mode": "Add New Mode",
     "modes.new_mode": "New Mode",
     "modes.reset_to_defaults": "Reset Modes to Defaults?",
-    "modes.reset_warning": "This will delete ALL user-created modes and restore the default modes."
+    "modes.reset_warning": "This will delete ALL user-created modes and restore the default modes.",
+    "restart_required": "Restart Required",
+    "restart_required.text": "A restart is required for this change to take effect.",
+    "button.restart_now": "Restart Now",
+    "button.restart_later": "Restart Later"
 }
