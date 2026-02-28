@@ -433,8 +433,9 @@ struct Config {
     bool autoBorderless = false;
     std::vector<DWORD> imageOverlaysHotkey = {};
     std::vector<DWORD> windowOverlaysHotkey = {};
-    CursorsConfig cursors;
-    std::string fontPath = "c:\\Windows\\Fonts\\Arial.ttf";
+    CursorsConfig                        cursors;
+    std::string lang = "zh_cn";
+    std::string fontPath = R"(c:\Windows\Fonts\MSYH.ttc)";
     int fpsLimit = 0;
     int fpsLimitSleepThreshold = 1000;
     MirrorGammaMode mirrorGammaMode = MirrorGammaMode::Auto;

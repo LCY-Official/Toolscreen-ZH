@@ -1537,6 +1537,7 @@ void ConfigToToml(const Config& config, toml::table& out) {
     out.insert("disableHookChaining", config.disableHookChaining);
     out.insert("hookChainingNextTarget", HookChainingNextTargetToString(config.hookChainingNextTarget));
     out.insert("defaultMode", config.defaultMode);
+    out.insert("lang", config.lang);
     out.insert("fontPath", config.fontPath);
     out.insert("fpsLimit", config.fpsLimit);
     out.insert("fpsLimitSleepThreshold", config.fpsLimitSleepThreshold);
@@ -1660,6 +1661,7 @@ void ConfigFromToml(const toml::table& tbl, Config& config) {
         GetStringOr(tbl, "hookChainingNextTarget", ConfigDefaults::CONFIG_HOOK_CHAINING_NEXT_TARGET)
     );
     config.defaultMode                  = GetStringOr(tbl, "defaultMode", ConfigDefaults::CONFIG_DEFAULT_MODE);
+    config.lang                         = GetStringOr(tbl, "lang", ConfigDefaults::CONFIG_LANG);
     config.fontPath                     = GetStringOr(tbl, "fontPath", ConfigDefaults::CONFIG_FONT_PATH);
     config.fpsLimit                     = GetOr(tbl, "fpsLimit", ConfigDefaults::CONFIG_FPS_LIMIT);
     config.fpsLimitSleepThreshold       = GetOr(tbl, "fpsLimitSleepThreshold", ConfigDefaults::CONFIG_FPS_LIMIT_SLEEP_THRESHOLD);

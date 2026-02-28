@@ -165,6 +165,7 @@ constexpr bool KEY_REBINDS_ENABLED = false;
 
 constexpr int            DEFAULT_CONFIG_VERSION           = 1;
 inline const std::string CONFIG_DEFAULT_MODE              = "Fullscreen";
+inline const std::string CONFIG_LANG                      = "zh_cn";
 inline const std::string CONFIG_FONT_PATH                 = R"(c:\Windows\Fonts\MSYH.ttc)";
 constexpr int            CONFIG_FPS_LIMIT                 = 0;
 constexpr int            CONFIG_FPS_LIMIT_SLEEP_THRESHOLD = 1000;
