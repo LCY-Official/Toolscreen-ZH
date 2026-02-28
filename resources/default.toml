@@ -1,5 +1,4 @@
-lang = "us"
-
+lang = "en"
 disableHookChaining = true
 hookChainingNextTarget = 'LatestHook'
 allowCursorEscape = true

@@ -7,7 +7,7 @@ if (ImGui::BeginTabItem("Settings")) {
 
     ImGui::SeparatorText("Performance");
 
-    ImGui::Text("FPS Limit:");
+    ImGui::Text(trc("label.fps_limit"));
     ImGui::SetNextItemWidth(600);
     int fpsLimitValue = (g_config.fpsLimit == 0) ? 1001 : g_config.fpsLimit;
     bool sliderActive = ImGui::IsItemActive() || ImGui::IsItemHovered();
@@ -16,9 +16,7 @@ if (ImGui::BeginTabItem("Settings")) {
         g_configIsDirty = true;
     }
     ImGui::SameLine();
-    HelpMarker("Limits the game's maximum frame rate.\n"
-               "Not quite as precise as NVIDIA Control Panel but close enough.\n"
-               "Lower FPS can reduce GPU load and power consumption.");
+    HelpMarker(trc("tooltip.fps_limit.advanced"));
 
     ImGui::Spacing();
     ImGui::SeparatorText("Capture/Streaming");
@@ -117,7 +115,7 @@ if (ImGui::BeginTabItem("Settings")) {
 
             ImGui::Spacing();
 
-            if (ImGui::Button("OK", ImVec2(80, 0)) || enterPressed) {
+            if (ImGui::Button(trc("button.ok"), ImVec2(80, 0)) || enterPressed) {
                 if (strcmp(s_passcodeInput, "5739") == 0) {
                     s_debugUnlocked = true;
                     ImGui::CloseCurrentPopup();

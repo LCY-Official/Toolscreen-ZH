@@ -1,11 +1,11 @@
-if (ImGui::BeginTabItem("General")) {
+if (ImGui::BeginTabItem(trc("tabs.general"))) {
     g_currentlyEditingMirror = "";
     g_imageDragMode.store(false);
     g_windowOverlayDragMode.store(false);
 
     SliderCtrlClickTip();
 
-    ImGui::SeparatorText("Window");
+    ImGui::SeparatorText(trc("label.window"));
     {
         HWND       hwnd                = g_minecraftHwnd.load(std::memory_order_relaxed);
         const bool canToggleBorderless = (hwnd != NULL && IsWindow(hwnd));
@@ -13,7 +13,7 @@ if (ImGui::BeginTabItem("General")) {
         if (!canToggleBorderless) {
             ImGui::BeginDisabled();
         }
-        if (ImGui::Button("Go Borderless", ImVec2(150, 0))) {
+        if (ImGui::Button(trc("general.go_borderless"), ImVec2(150, 0))) {
             ToggleBorderlessWindowedFullscreen(hwnd);
         }
         if (!canToggleBorderless) {
@@ -22,8 +22,7 @@ if (ImGui::BeginTabItem("General")) {
 
         ImGui::SameLine();
         HelpMarker(
-            "Instantly toggles the game window into borderless mode.\n"
-            "If already borderless, it returns to windowed mode."
+            trc("general.tooltip.go_borderless")
         );
     }
 
@@ -38,13 +37,13 @@ if (ImGui::BeginTabItem("General")) {
         }
 
         ImGui::SameLine();
-        ImGui::Text("Hotkey:");
+        ImGui::Text("%s:", trc("hotkeys.hotkey"));
         ImGui::SameLine();
 
         if (hotkeyIdx != -1) {
             std::string keyStr      = GetKeyComboString(g_config.hotkeys[hotkeyIdx].keys);
             bool        isBinding   = (s_mainHotkeyToBind == hotkeyIdx);
-            const char* buttonLabel = isBinding ? "[Press Keys...]" : (keyStr.empty() ? "[Click to Bind]" : keyStr.c_str());
+            const char* buttonLabel = isBinding ? trc("hotkeys.press_keys") : (keyStr.empty() ? trc("hotkeys.click_to_bind") : keyStr.c_str());
 
             ImGui::PushID(label);
             if (ImGui::Button(buttonLabel, ImVec2(120, 0))) {
@@ -55,7 +54,7 @@ if (ImGui::BeginTabItem("General")) {
             }
             ImGui::PopID();
         } else {
-            ImGui::TextDisabled("[No hotkey]");
+            ImGui::TextDisabled(trc("hotkeys.no_hotkey"));
         }
     };
 
@@ -128,7 +127,7 @@ if (ImGui::BeginTabItem("General")) {
         return false;
     };
 
-    ImGui::SeparatorText("Modes");
+    ImGui::SeparatorText(trc("hotkeys.modes"));
 
     auto HasHotkeyBound = [&](const std::string& modeId) -> bool {
         for (const auto& hotkey : g_config.hotkeys) {
@@ -153,7 +152,7 @@ if (ImGui::BeginTabItem("General")) {
 
         std::string keyStr      = GetKeyComboString(g_config.hotkeys[hotkeyIdx].keys);
         bool        isBinding   = (s_mainHotkeyToBind == hotkeyIdx);
-        const char* buttonLabel = isBinding ? "[Press Keys...]" : (keyStr.empty() ? "[Click to Bind]" : keyStr.c_str());
+        const char* buttonLabel = isBinding ? trc("hotkeys.press_keys") : (keyStr.empty() ? trc("hotkeys.click_to_bind") : keyStr.c_str());
 
         ImGui::PushID(label);
         ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(40, 60, 100, 180));
@@ -241,13 +240,12 @@ if (ImGui::BeginTabItem("General")) {
 
                 if (eyezoomInline == EyeZoomInlineKind::LabelsOnly) {
                     ImGui::TableSetColumnIndex(0);
-                    ImGui::TextUnformatted("Clone Width");
+                    ImGui::TextUnformatted(trc("eyezoom.clone_width"));
                     ImGui::TableSetColumnIndex(1);
-                    ImGui::TextUnformatted("Overlay Pixels");
+                    ImGui::TextUnformatted(trc("eyezoom.overlay_pixels"));
                     ImGui::SameLine();
                     HelpMarker(
-                        "Clone Width controls how wide the EyeZoom clone samples.\n"
-                        "Overlay Pixels controls how much of the numbered overlay is drawn on each side of center."
+                        trc("eyezoom.tooltip")
                     );
                 } else if (eyezoomInline == EyeZoomInlineKind::ControlsOnly) {
                     ImGui::TableSetColumnIndex(0);
@@ -277,14 +275,14 @@ if (ImGui::BeginTabItem("General")) {
     };
 
     if (ImGui::BeginTable("ModeTable", 5, ImGuiTableFlags_SizingFixedFit)) {
-        ImGui::TableSetupColumn("Mode", ImGuiTableColumnFlags_WidthFixed, 80);
-        ImGui::TableSetupColumn("Width", ImGuiTableColumnFlags_WidthFixed, 120);
-        ImGui::TableSetupColumn("Height", ImGuiTableColumnFlags_WidthFixed, 120);
-        ImGui::TableSetupColumn("Hotkey", ImGuiTableColumnFlags_WidthFixed, 150);
-        ImGui::TableSetupColumn("EyeZoom Settings", ImGuiTableColumnFlags_WidthFixed, 240);
+        ImGui::TableSetupColumn(trc("general.mode_table.mode"), ImGuiTableColumnFlags_WidthFixed, 80);
+        ImGui::TableSetupColumn(trc("general.mode_table.width"), ImGuiTableColumnFlags_WidthFixed, 120);
+        ImGui::TableSetupColumn(trc("general.mode_table.height"), ImGuiTableColumnFlags_WidthFixed, 120);
+        ImGui::TableSetupColumn(trc("general.mode_table.hotkey"), ImGuiTableColumnFlags_WidthFixed, 150);
+        ImGui::TableSetupColumn(trc("general.mode_table.eyezoom_settings"), ImGuiTableColumnFlags_WidthFixed, 240);
 
         ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
-        const char* headers[] = {"Mode", "Width", "Height", "Hotkey", "EyeZoom Settings"};
+        const char* headers[] = {trc("general.mode_table.mode"), trc("general.mode_table.width"), trc("general.mode_table.height"), trc("general.mode_table.hotkey"), trc("general.mode_table.eyezoom_settings")};
         for (int i = 0; i < 5; i++) {
             ImGui::TableSetColumnIndex(i);
             float columnWidth = ImGui::GetColumnWidth();
@@ -307,21 +305,21 @@ if (ImGui::BeginTabItem("General")) {
         ImGui::EndTable();
     }
 
-    ImGui::SeparatorText("Sensitivity");
+    ImGui::SeparatorText(trc("label.sensitivity"));
 
-    ImGui::Text("Global:");
+    ImGui::Text(trc("general.global_sensitivity"));
     ImGui::SameLine();
     ImGui::SetNextItemWidth(200);
     if (ImGui::SliderFloat("##globalSensBasic", &g_config.mouseSensitivity, 0.001f, 10.0f, "%.3fx")) {
         g_configIsDirty = true;
     }
     ImGui::SameLine();
-    HelpMarker("Global mouse sensitivity multiplier (1.0 = normal).\nAffects all modes unless overridden.");
+    HelpMarker(trc("general.sens.tooltip.global_sensitivity"));
 
     {
         ModeConfig* eyezoomMode = GetModeConfig("EyeZoom");
         if (eyezoomMode) {
-            ImGui::Text("EyeZoom:");
+            ImGui::Text(trc("general.eyezoom_sensitivity"));
             ImGui::SameLine();
             ImGui::SetNextItemWidth(200);
             if (ImGui::SliderFloat("##eyezoomSensBasic", &eyezoomMode->modeSensitivity, 0.001f, 10.0f, "%.3fx")) {
@@ -330,12 +328,12 @@ if (ImGui::BeginTabItem("General")) {
                 g_configIsDirty                         = true;
             }
             ImGui::SameLine();
-            HelpMarker("EyeZoom mode sensitivity (1.0 = normal).\nOverrides global sensitivity when in EyeZoom.");
+            HelpMarker(trc("general.sens.tooltip.eyezoom_sensitivity"));
         }
     }
 
     ImGui::Separator();
-    ImGui::SeparatorText("Overlays");
+    ImGui::SeparatorText(trc("label.overlays"));
 
     {
         auto FindNinjabrainBotImage = [&]() -> ImageConfig* {
@@ -414,8 +412,8 @@ if (ImGui::BeginTabItem("General")) {
         }
     }
 
-    ImGui::SeparatorText("Mirrors");
-    ImGui::TextDisabled("Assign mirrors and mirror groups to modes");
+    ImGui::SeparatorText(trc("general.mirrors"));
+    ImGui::TextDisabled(trc("general.tooltip.mirrors"));
 
     auto RenderMirrorAssignments = [&](const std::string& modeId, const char* label) {
         ModeConfig* modeConfig = GetModeConfig(modeId);
@@ -457,7 +455,7 @@ if (ImGui::BeginTabItem("General")) {
                 g_configIsDirty = true;
             }
 
-            if (ImGui::BeginCombo("##AddMirrorOrGroup", "[Add Mirror/Group]")) {
+            if (ImGui::BeginCombo("##AddMirrorOrGroup", trc("general.add_mirror_or_group"))) {
                 for (const auto& mirrorConf : g_config.mirrors) {
                     if (std::find(modeConfig->mirrorIds.begin(), modeConfig->mirrorIds.end(), mirrorConf.name) ==
                         modeConfig->mirrorIds.end()) {
@@ -473,7 +471,7 @@ if (ImGui::BeginTabItem("General")) {
                 for (const auto& groupConf : g_config.mirrorGroups) {
                     if (std::find(modeConfig->mirrorGroupIds.begin(), modeConfig->mirrorGroupIds.end(), groupConf.name) ==
                         modeConfig->mirrorGroupIds.end()) {
-                        std::string displayName = "[Group] " + groupConf.name;
+                        std::string displayName = tr("general.group") + " " + groupConf.name;
                         if (ImGui::Selectable(displayName.c_str())) {
                             modeConfig->mirrorGroupIds.push_back(groupConf.name);
                             g_configIsDirty = true;

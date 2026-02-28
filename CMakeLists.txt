@@ -105,6 +105,7 @@ target_include_directories(Toolscreen PRIVATE
     third_party/json
     third_party/json/nlohmann
     third_party/glew/include
+    third_party/
     ${CMAKE_BINARY_DIR}
 )
 

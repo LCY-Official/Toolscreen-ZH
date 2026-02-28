@@ -1,10 +1,10 @@
-if (ImGui::BeginTabItem("Supporters")) {
+if (ImGui::BeginTabItem(trc("tabs.supporters"))) {
     g_currentlyEditingMirror = "";
     g_imageDragMode.store(false);
     g_windowOverlayDragMode.store(false);
 
-    ImGui::TextWrapped("Thanks to these people for supporting the development of Toolscreen!");
-    ImGui::TextWrapped("If you'd like to support, please consider donating at https://patreon.com/jojoe77777");
+    ImGui::TextWrapped(trc("supporters.thanks"));
+    ImGui::TextWrapped(trc("supporters.donate"));
     ImGui::Spacing();
 
     const bool loaded = g_supportersLoaded.load(std::memory_order_acquire);
@@ -12,14 +12,14 @@ if (ImGui::BeginTabItem("Supporters")) {
 
     if (!loaded) {
         if (failedBefore) {
-            ImGui::TextWrapped("Unable to load supporters.");
+            ImGui::TextWrapped(trc("supporters.unable_to_load"));
         } else {
-            ImGui::TextWrapped("Loading supporters...");
+            ImGui::TextWrapped(trc("supporters.loading"));
         }
     } else {
         std::shared_lock<std::shared_mutex> readLock(g_supportersMutex);
         if (g_supporterRoles.empty()) {
-            ImGui::TextDisabled("No supporters listed.");
+            ImGui::TextDisabled(trc("supporters.no_supporters"));
         }
 
         for (const auto& role : g_supporterRoles) {
@@ -29,7 +29,7 @@ if (ImGui::BeginTabItem("Supporters")) {
             ImGui::PopStyleColor();
 
             if (role.members.empty()) {
-                ImGui::TextDisabled("No members listed.");
+                ImGui::TextDisabled(trc("supporters.no_members"));
             } else {
                 for (const auto& member : role.members) {
                     ImGui::BulletText("%s", member.c_str());
@@ -42,5 +42,3 @@ if (ImGui::BeginTabItem("Supporters")) {
 
     ImGui::EndTabItem();
 }
-
-

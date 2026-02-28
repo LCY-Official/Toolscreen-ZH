@@ -37,15 +37,22 @@ bool LoadTranslations(const std::string& lang) {
 
         g_translations = nlohmann::json::parse((const char*)resPtr, (const char*)resPtr + resSize);
     } catch (const std::exception& e) {
-        Log("Failed to load translations of " + lang + ": " + e.what());
+        LogCategory("i18n","Failed to load translations of " + lang + ": " + e.what());
         return false;
     }
     return true;
 }
 
 std::string tr(const char* key) {
-    const auto translation = g_translations[key].get<std::string>();
-    return translation.empty() ? key : translation;
+    static std::mutex           trMutex;
+    std::lock_guard<std::mutex> lock(trMutex);
+    if(!g_translations.contains(key)) {
+        LogCategory("i18n",fmt::format("tr({}) not found", key));
+        return key;
+    }
+    if(!g_translations[key].is_string()) {
+        LogCategory("i18n",fmt::format("tr({}) is not a string", key));
+        return key;
+    }
+    return g_translations[key];
 }
-
-std::string tr(const std::string& key) { return tr(key.c_str()); }

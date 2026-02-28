@@ -21,7 +21,7 @@ if (ImGui::BeginTabItem("Window Overlays")) {
         if (ImGui::BeginPopupModal(overlay_popup_id.c_str(), NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
             ImGui::Text("Are you sure you want to delete window overlay '%s'?\nThis cannot be undone.", overlay.name.c_str());
             ImGui::Separator();
-            if (ImGui::Button("OK", ImVec2(120, 0))) {
+            if (ImGui::Button(trc("button.ok"), ImVec2(120, 0))) {
                 windowOverlay_to_remove = (int)i;
                 g_configIsDirty = true;
                 ImGui::CloseCurrentPopup();
@@ -66,7 +66,7 @@ if (ImGui::BeginTabItem("Window Overlays")) {
 
             if (hasDuplicate) {
                 ImGui::SameLine();
-                ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Name already exists!");
+                ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "%s", trc("status.name_duplicate"));
             }
 
             // Dropdown for selecting from currently open windows
@@ -150,7 +150,7 @@ if (ImGui::BeginTabItem("Window Overlays")) {
             }
             ImGui::PopItemWidth();
             ImGui::SeparatorText("Rendering");
-            if (ImGui::SliderFloat("Opacity", &overlay.opacity, 0.0f, 1.0f)) g_configIsDirty = true;
+            if (ImGui::SliderFloat(trc("label.opacity"), &overlay.opacity, 0.0f, 1.0f)) g_configIsDirty = true;
             if (ImGui::Checkbox("Pixelated Scaling", &overlay.pixelatedScaling)) g_configIsDirty = true;
             if (ImGui::Checkbox("Only on my screen", &overlay.onlyOnMyScreen)) g_configIsDirty = true;
             if (ImGui::IsItemHovered()) {
@@ -167,7 +167,7 @@ if (ImGui::BeginTabItem("Window Overlays")) {
             ImGui::NextColumn();
             if (Spinner("##overlay_y", &overlay.y)) g_configIsDirty = true;
             ImGui::NextColumn();
-            ImGui::Text("Scale");
+            ImGui::Text(trc("label.scale"));
             ImGui::NextColumn();
             float scalePercent = overlay.scale * 100.0f;
             ImGui::SetNextItemWidth(250);
@@ -176,7 +176,7 @@ if (ImGui::BeginTabItem("Window Overlays")) {
                 g_configIsDirty = true;
             }
             ImGui::NextColumn();
-            ImGui::Text("Relative To");
+            ImGui::Text(trc("label.relative_to"));
             ImGui::NextColumn();
             const char* current_rel_to = getFriendlyName(overlay.relativeTo, imageRelativeToOptions);
             ImGui::SetNextItemWidth(150);
@@ -390,7 +390,7 @@ if (ImGui::BeginTabItem("Window Overlays")) {
     if (ImGui::BeginPopupModal("Reset Window Overlays to Defaults?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::TextColored(ImVec4(1.0f, 0.7f, 0.0f, 1.0f), "WARNING:");
         ImGui::Text("This will delete ALL window overlays.");
-        ImGui::Text("This action cannot be undone.");
+        ImGui::Text(trc("label.action_cannot_be_undone"));
         ImGui::Separator();
         if (ImGui::Button("Confirm Reset", ImVec2(120, 0))) {
             for (const auto& overlay : g_config.windowOverlays) { RemoveWindowOverlayFromCache(overlay.name); }

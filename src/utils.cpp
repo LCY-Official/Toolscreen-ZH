@@ -608,6 +608,8 @@ void LogCategory(const char* category, const std::string& message) {
         enabled = g_config.debug.logCursorTextures;
     else if (strcmp(category, "hookchain") == 0)
         enabled = true;
+    else if (strcmp(category, "i18n") == 0)
+        enabled = true;
 
     if (!enabled) return;
     Log(message);

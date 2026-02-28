@@ -34,6 +34,7 @@
 #include "render.h"
 #include "render_thread.h"
 #include "stb_image.h"
+#include "translation.h"
 #include "utils.h"
 #include "virtual_camera.h"
 #include "window_overlay.h"
@@ -457,7 +458,7 @@ static std::wstring GetImagePickerInitialDirectory(
 
 static std::string ValidateImageFile(const std::string& path, const std::wstring& toolscreenPath) {
     if (path.empty()) {
-        return "Path is empty";
+        return tr("error.path_empty");
     }
 
     std::wstring final_path;
@@ -469,7 +470,7 @@ static std::string ValidateImageFile(const std::string& path, const std::wstring
     }
 
     if (!std::filesystem::exists(final_path)) {
-        return "File does not exist";
+        return tr("error.file_not_exists");
     }
 
     std::string path_utf8 = WideToUtf8(final_path);
@@ -477,16 +478,15 @@ static std::string ValidateImageFile(const std::string& path, const std::wstring
     int w, h, c;
     if (stbi_info(path_utf8.c_str(), &w, &h, &c) == 0) {
         const char* reason = stbi_failure_reason();
-        return std::string("Invalid image: ") +
-               (reason ? reason : "unknown format");
+        return ftr("error.invalid_image", (reason ? reason : trc("error.unknown_format")));
     }
 
     if (w <= 0 || h <= 0) {
-        return "Invalid image dimensions";
+        return ftr("error.invalid_image", "Invalid image dimensions");
     }
 
     if (w > 16384 || h > 16384) {
-        return "Image too large (max 16384x16384)";
+        return tr("error.image_too_large");
     }
 
     return "";
@@ -596,9 +596,7 @@ static void HelpMarker(const char* desc) {
 }
 
 static void SliderCtrlClickTip() {
-    ImGui::TextDisabled(
-        "Tip: Double-click any slider to input a specific value."
-    );
+    ImGui::TextDisabled("%s", trc("tip.double_click"));
     ImGui::Spacing();
 }
 
@@ -634,7 +632,7 @@ static bool SliderFloatDoubleClickInput(const char* label, float* v, float v_min
         io.KeyCtrl = prevCtrl;
     }
     if (ImGui::IsItemHovered()) {
-        ImGui::SetTooltip("Double click to edit precisely");
+        ImGui::SetTooltip("%s", trc("tooltip.double_click"));
     }
     return changed;
 }
@@ -653,7 +651,7 @@ static bool SliderIntDoubleClickInput(const char* label, int* v, int v_min, int 
         io.KeyCtrl = prevCtrl;
     }
     if (ImGui::IsItemHovered()) {
-        ImGui::SetTooltip("Double click to edit precisely");
+        ImGui::SetTooltip("%s", trc("tooltip.double_click"));
     }
     return changed;
 }
@@ -680,18 +678,18 @@ static void RenderTransitionSettingsHorizontalNoBackground(
             ("TransitionTableNoBg" + idSuffix).c_str(), 1,
             ImGuiTableFlags_Borders | ImGuiTableFlags_SizingStretchProp
         )) {
-        ImGui::TableSetupColumn("Game", ImGuiTableColumnFlags_WidthStretch, 1.0f);
+        ImGui::TableSetupColumn(trc("transition.game"), ImGuiTableColumnFlags_WidthStretch, 1.0f);
         ImGui::TableHeadersRow();
 
         ImGui::TableNextRow();
 
         ImGui::TableSetColumnIndex(0);
         ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.3f, 0.5f, 0.7f, 0.8f));
-        ImGui::Text("Viewport Animation");
+        ImGui::Text("%s", trc("transition.viewport_animation"));
         ImGui::PopStyleColor();
         ImGui::Separator();
 
-        ImGui::Text("Type:");
+        ImGui::Text("%s", trc("transition.type"));
         ImGui::SetNextItemWidth(-FLT_MIN);
         const char* gameOptions[] = {"Cut", "Bounce"};
         int         gameType      = (mode.gameTransition == GameTransitionType::Cut) ? 0 : 1;
@@ -703,36 +701,36 @@ static void RenderTransitionSettingsHorizontalNoBackground(
 
         if (mode.gameTransition == GameTransitionType::Bounce) {
             ImGui::Spacing();
-            ImGui::Text("Duration:");
+            ImGui::Text("%s", trc("transition.duration"));
             ImGui::SetNextItemWidth(-FLT_MIN);
             if (Spinner(("##GameDur" + idSuffix).c_str(), &mode.transitionDurationMs, 10, 50, 5000)) {
                 g_configIsDirty = true;
             }
             ImGui::SameLine();
-            ImGui::TextDisabled("ms");
+            ImGui::TextDisabled("%s", trc("transition.ms"));
 
             ImGui::Spacing();
-            ImGui::Text("Ease In:");
+            ImGui::Text("%s", trc("transition.ease_in"));
             ImGui::SetNextItemWidth(-FLT_MIN);
             if (ImGui::SliderFloat(("##EaseIn" + idSuffix).c_str(), &mode.easeInPower, 1.0f, 6.0f, "%.1f")) {
                 g_configIsDirty = true;
             }
 
-            ImGui::Text("Ease Out:");
+            ImGui::Text("%s", trc("transition.ease_out"));
             ImGui::SetNextItemWidth(-FLT_MIN);
             if (ImGui::SliderFloat(("##EaseOut" + idSuffix).c_str(), &mode.easeOutPower, 1.0f, 6.0f, "%.1f")) {
                 g_configIsDirty = true;
             }
 
             ImGui::Spacing();
-            ImGui::Text("Bounces:");
+            ImGui::Text("%s", trc("transition.bounces"));
             ImGui::SetNextItemWidth(-FLT_MIN);
             if (Spinner(("##BounceCount" + idSuffix).c_str(), &mode.bounceCount, 1, 0, 10)) {
                 g_configIsDirty = true;
             }
 
             if (mode.bounceCount > 0) {
-                ImGui::Text("Intensity:");
+                ImGui::Text("%s", trc("transition.intensity"));
                 ImGui::SetNextItemWidth(-FLT_MIN);
                 float displayIntensity = mode.bounceIntensity * 100.0f;
                 if (ImGui::SliderFloat(("##BounceInt" + idSuffix).c_str(), &displayIntensity, 0.0f, 5.0f, "%.2f")) {
@@ -740,7 +738,7 @@ static void RenderTransitionSettingsHorizontalNoBackground(
                     g_configIsDirty      = true;
                 }
 
-                ImGui::Text("Bounce ms:");
+                ImGui::Text("%s", trc("transition.bounce_ms"));
                 ImGui::SetNextItemWidth(-FLT_MIN);
                 if (Spinner(("##BounceDur" + idSuffix).c_str(), &mode.bounceDurationMs, 10, 20, 500)) {
                     g_configIsDirty = true;
@@ -749,15 +747,11 @@ static void RenderTransitionSettingsHorizontalNoBackground(
 
             ImGui::Spacing();
             ImGui::Separator();
-            if (ImGui::Checkbox(("Relative Stretching##" + idSuffix).c_str(), &mode.relativeStretching)) {
+            if (ImGui::Checkbox((tr("transition.relative_streching") + "##" + idSuffix).c_str(), &mode.relativeStretching)) {
                 g_configIsDirty = true;
             }
             if (ImGui::IsItemHovered()) {
-                ImGui::SetTooltip(
-                    "When enabled, viewport-relative overlays scale with the viewport "
-                    "during animation.\nWhen disabled, "
-                    "overlays move with the viewport but keep their original size."
-                );
+                ImGui::SetTooltip("%s", trc("transition.tooltip.relative_streching"));
             }
         }
 
@@ -766,10 +760,7 @@ static void RenderTransitionSettingsHorizontalNoBackground(
 
     ImGui::PopStyleVar();
 
-    ImGui::TextDisabled(
-        "Note: Fullscreen has no background. Transitions use the other mode's "
-        "background."
-    );
+    ImGui::TextDisabled("%s", trc("transition.note.fullscreen_background"));
 }
 
 static void RenderTransitionSettingsHorizontal(ModeConfig& mode, const std::string& idSuffix) {
@@ -779,18 +770,18 @@ static void RenderTransitionSettingsHorizontal(ModeConfig& mode, const std::stri
             ("TransitionTable" + idSuffix).c_str(), 1,
             ImGuiTableFlags_Borders | ImGuiTableFlags_SizingStretchProp
         )) {
-        ImGui::TableSetupColumn("Game", ImGuiTableColumnFlags_WidthStretch, 1.0f);
+        ImGui::TableSetupColumn(trc("transition.game"), ImGuiTableColumnFlags_WidthStretch, 1.0f);
         ImGui::TableHeadersRow();
 
         ImGui::TableNextRow();
 
         ImGui::TableSetColumnIndex(0);
         ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.3f, 0.5f, 0.7f, 0.8f));
-        ImGui::Text("Viewport Animation");
+        ImGui::Text("%s", trc("transition.viewport_animation"));
         ImGui::PopStyleColor();
         ImGui::Separator();
 
-        ImGui::Text("Type:");
+        ImGui::Text("%s", trc("transition.type"));
         ImGui::SetNextItemWidth(-FLT_MIN);
         const char* gameOptions[] = {"Cut", "Bounce"};
         int         gameType      = (mode.gameTransition == GameTransitionType::Cut) ? 0 : 1;
@@ -802,36 +793,36 @@ static void RenderTransitionSettingsHorizontal(ModeConfig& mode, const std::stri
 
         if (mode.gameTransition == GameTransitionType::Bounce) {
             ImGui::Spacing();
-            ImGui::Text("Duration:");
+            ImGui::Text("%s", trc("transition.duration"));
             ImGui::SetNextItemWidth(-FLT_MIN);
             if (Spinner(("##GameDur" + idSuffix).c_str(), &mode.transitionDurationMs, 10, 50, 5000)) {
                 g_configIsDirty = true;
             }
             ImGui::SameLine();
-            ImGui::TextDisabled("ms");
+            ImGui::TextDisabled("%s", trc("transition.ms"));
 
             ImGui::Spacing();
-            ImGui::Text("Ease In:");
+            ImGui::Text("%s", trc("transition.ease_in"));
             ImGui::SetNextItemWidth(-FLT_MIN);
             if (ImGui::SliderFloat(("##EaseIn" + idSuffix).c_str(), &mode.easeInPower, 1.0f, 6.0f, "%.1f")) {
                 g_configIsDirty = true;
             }
 
-            ImGui::Text("Ease Out:");
+            ImGui::Text("%s", trc("transition.ease_out"));
             ImGui::SetNextItemWidth(-FLT_MIN);
             if (ImGui::SliderFloat(("##EaseOut" + idSuffix).c_str(), &mode.easeOutPower, 1.0f, 6.0f, "%.1f")) {
                 g_configIsDirty = true;
             }
 
             ImGui::Spacing();
-            ImGui::Text("Bounces:");
+            ImGui::Text("%s", trc("transition.bounces"));
             ImGui::SetNextItemWidth(-FLT_MIN);
             if (Spinner(("##BounceCount" + idSuffix).c_str(), &mode.bounceCount, 1, 0, 10)) {
                 g_configIsDirty = true;
             }
 
             if (mode.bounceCount > 0) {
-                ImGui::Text("Intensity:");
+                ImGui::Text("%s", trc("transition.intensity"));
                 ImGui::SetNextItemWidth(-FLT_MIN);
                 float displayIntensity = mode.bounceIntensity * 100.0f;
                 if (ImGui::SliderFloat(("##BounceInt" + idSuffix).c_str(), &displayIntensity, 0.0f, 5.0f, "%.2f")) {
@@ -839,7 +830,7 @@ static void RenderTransitionSettingsHorizontal(ModeConfig& mode, const std::stri
                     g_configIsDirty      = true;
                 }
 
-                ImGui::Text("Bounce ms:");
+                ImGui::Text("%s", trc("transition.bounce_ms"));
                 ImGui::SetNextItemWidth(-FLT_MIN);
                 if (Spinner(("##BounceDur" + idSuffix).c_str(), &mode.bounceDurationMs, 10, 20, 500)) {
                     g_configIsDirty = true;
@@ -852,30 +843,24 @@ static void RenderTransitionSettingsHorizontal(ModeConfig& mode, const std::stri
                 g_configIsDirty = true;
             }
             if (ImGui::IsItemHovered()) {
-                ImGui::SetTooltip(
-                    "When enabled, viewport-relative overlays scale with the viewport "
-                    "during animation.\nWhen disabled, "
-                    "overlays move with the viewport but keep their original size."
-                );
+                ImGui::SetTooltip("%s", trc("transition.tooltip.relative_streching"));
             }
 
-            if (ImGui::Checkbox(("Skip X Animation##" + idSuffix).c_str(), &mode.skipAnimateX)) {
+            if (ImGui::Checkbox((tr("transition.skip_x_animation") + "##" + idSuffix).c_str(), &mode.skipAnimateX)) {
                 g_configIsDirty = true;
             }
             if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip(
-                    "When enabled, the X axis (width) instantly jumps to target while "
-                    "Y animates."
+                    "%s", trc("transition.tooltip.skip_x_animation")
                 );
             }
 
-            if (ImGui::Checkbox(("Skip Y Animation##" + idSuffix).c_str(), &mode.skipAnimateY)) {
+            if (ImGui::Checkbox((tr("transition.skip_y_animation") + "##" + idSuffix).c_str(), &mode.skipAnimateY)) {
                 g_configIsDirty = true;
             }
             if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip(
-                    "When enabled, the Y axis (height) instantly jumps to target while "
-                    "X animates."
+                    "%s", trc("transition.tooltip.skip_y_animation")
                 );
             }
         }
@@ -886,7 +871,7 @@ static void RenderTransitionSettingsHorizontal(ModeConfig& mode, const std::stri
     ImGui::PopStyleVar();
 
     ImGui::Spacing();
-    if (ImGui::Button(("Preview Transition##" + idSuffix).c_str())) {
+    if (ImGui::Button((tr("preview_transition") + "##" + idSuffix).c_str())) {
         std::lock_guard<std::mutex> pendingLock(g_pendingModeSwitchMutex);
         g_pendingModeSwitch.pending           = true;
         g_pendingModeSwitch.isPreview         = true;
@@ -897,9 +882,7 @@ static void RenderTransitionSettingsHorizontal(ModeConfig& mode, const std::stri
             mode.id);
     }
     ImGui::SameLine();
-    HelpMarker(("Preview the transition by switching from your default mode (" +
-                g_config.defaultMode + ") to this mode.")
-                   .c_str());
+    HelpMarker(ftrc("transition.tooltip.preview_transition", g_config.defaultMode));
 }
 
 std::string GameTransitionTypeToString(GameTransitionType type) {
@@ -907,7 +890,6 @@ std::string GameTransitionTypeToString(GameTransitionType type) {
         case GameTransitionType::Cut:
             return "Cut";
         case GameTransitionType::Bounce:
-            return "Bounce";
         default:
             return "Bounce";
     }
@@ -921,7 +903,6 @@ GameTransitionType StringToGameTransitionType(const std::string& str) {
 std::string OverlayTransitionTypeToString(OverlayTransitionType type) {
     switch (type) {
         case OverlayTransitionType::Cut:
-            return "Cut";
         default:
             return "Cut";
     }
@@ -934,7 +915,6 @@ OverlayTransitionType StringToOverlayTransitionType(const std::string& str) {
 std::string BackgroundTransitionTypeToString(BackgroundTransitionType type) {
     switch (type) {
         case BackgroundTransitionType::Cut:
-            return "Cut";
         default:
             return "Cut";
     }
@@ -2835,25 +2815,18 @@ void RenderConfigErrorGUI() {
     ImVec2   center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
     ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
     ImGui::SetNextWindowSize(ImVec2(600, 0));
-    if (ImGui::Begin("Configuration Error", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove)) {
+    if (ImGui::Begin(trc("error.configuration_error"), NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove)) {
         static std::chrono::steady_clock::time_point s_lastCopyTime{};
         std::string                                  errorMsg;
         {
             std::lock_guard<std::mutex> lock(g_configErrorMutex);
             errorMsg = g_configLoadError;
         }
-        ImGui::TextWrapped(
-            "A critical error occurred while loading the configuration file "
-            "(config.toml)."
-        );
+        ImGui::TextWrapped("%s", trc("error.configuration_error.detail.before_reason"));
         ImGui::Separator();
         ImGui::TextWrapped("%s", errorMsg.c_str());
         ImGui::Separator();
-        ImGui::TextWrapped(
-            "The application cannot continue. To get help, copy the debug info and "
-            "send it to a "
-            "developer. Otherwise, please quit the game."
-        );
+        ImGui::TextWrapped("%s", trc("error.configuration_error.detail.after_reason"));
         ImGui::Separator();
 
         bool show_feedback = std::chrono::duration_cast<std::chrono::seconds>(
@@ -2861,15 +2834,15 @@ void RenderConfigErrorGUI() {
                              )
                                  .count() < 3;
 
-        float button_width_copy = ImGui::CalcTextSize("Copy Debug Info").x +
+        float button_width_copy = ImGui::CalcTextSize(trc("button.copy_debug_info")).x +
                                   ImGui::GetStyle().FramePadding.x * 2.0f;
         float button_width_quit =
-            ImGui::CalcTextSize("Quit").x + ImGui::GetStyle().FramePadding.x * 2.0f;
+            ImGui::CalcTextSize(trc("button.quit")).x + ImGui::GetStyle().FramePadding.x * 2.0f;
         float total_button_width =
             button_width_copy + button_width_quit + ImGui::GetStyle().ItemSpacing.x;
         ImGui::SetCursorPosX((ImGui::GetWindowWidth() - total_button_width) * 0.5f);
 
-        if (ImGui::Button("Copy Debug Info")) {
+        if (ImGui::Button(trc("button.copy_debug_info"))) {
             std::string   configContent = "ERROR: Could not read config.toml.";
             std::wstring  configPath    = g_toolscreenPath + L"\\config.toml";
             std::ifstream f(std::filesystem::path(configPath), std::ios::binary);
@@ -2892,7 +2865,7 @@ void RenderConfigErrorGUI() {
         }
 
         ImGui::SameLine();
-        if (ImGui::Button("Quit")) {
+        if (ImGui::Button(trc("button.quit"))) {
             exit(0);
         }
 
@@ -2971,19 +2944,32 @@ void RenderSettingsGUI() {
     ResetTransientBindingUiState();
 
     static const std::vector<std::pair<const char*, const char*>>
-        relativeToOptions = {{"topLeftViewport", "Top Left (Viewport)"}, {"topRightViewport", "Top Right (Viewport)"}, {"bottomLeftViewport", "Bottom Left (Viewport)"}, {"bottomRightViewport", "Bottom Right (Viewport)"}, {"centerViewport", "Center (Viewport)"}, {"pieLeft", "Pie-Chart Left"}, {"pieRight", "Pie-Chart Right"}, {"topLeftScreen", "Top Left (Screen)"}, {"topRightScreen", "Top Right (Screen)"}, {"bottomLeftScreen", "Bottom Left (Screen)"}, {"bottomRightScreen", "Bottom Right (Screen)"}, {"centerScreen", "Center (Screen)"}};
+        relativeToOptions = {
+            {"topLeftViewport", trc("position.top_left_viewport")},
+            {"topRightViewport", trc("position.top_right_viewport")},
+            {"bottomLeftViewport", trc("position.bottom_left_viewport")},
+            {"bottomRightViewport", trc("position.bottom_right_viewport")},
+            {"centerViewport", trc("position.center_viewport")},
+            {"pieLeft", trc("position.pie_left")},
+            {"pieRight", trc("position.pie_right")},
+            {"topLeftScreen", trc("position.top_left_screen")},
+            {"topRightScreen", trc("position.top_right_screen")},
+            {"bottomLeftScreen", trc("position.bottom_left_screen")},
+            {"bottomRightScreen", trc("position.bottom_right_screen")},
+            {"centerScreen", trc("position.center_screen")}
+        };
     static const std::vector<std::pair<const char*, const char*>>
         imageRelativeToOptions = {
-            {"topLeftViewport", "Top Left (Viewport)"},
-            {"topRightViewport", "Top Right (Viewport)"},
-            {"bottomLeftViewport", "Bottom Left (Viewport)"},
-            {"bottomRightViewport", "Bottom Right (Viewport)"},
-            {"centerViewport", "Center (Viewport)"},
-            {"topLeftScreen", "Top Left (Screen)"},
-            {"topRightScreen", "Top Right (Screen)"},
-            {"bottomLeftScreen", "Bottom Left (Screen)"},
-            {"bottomRightScreen", "Bottom Right (Screen)"},
-            {"centerScreen", "Center (Screen)"}
+            {"topLeftViewport", trc("position.top_left_viewport")},
+            {"topRightViewport", trc("position.top_right_viewport")},
+            {"bottomLeftViewport", trc("position.bottom_left_viewport")},
+            {"bottomRightViewport", trc("position.bottom_right_viewport")},
+            {"centerViewport", trc("position.center_viewport")},
+            {"topLeftScreen", trc("position.top_left_screen")},
+            {"topRightScreen", trc("position.top_right_screen")},
+            {"bottomLeftScreen", trc("position.bottom_left_screen")},
+            {"bottomRightScreen", trc("position.bottom_right_screen")},
+            {"centerScreen", trc("position.center_screen")}
         };
     auto getFriendlyName =
         [&](const std::string&                                      key,
@@ -3011,12 +2997,12 @@ void RenderSettingsGUI() {
 
     static const std::vector<std::pair<const char*, const char*>>
         gameStateDisplayNames = {
-            {"wall", "Wall Screen"},
-            {"inworld,cursor_free", "In World (Cursor Free)"},
-            {"inworld,cursor_grabbed", "In World (Cursor Grabbed)"},
-            {"title", "Title Screen"},
-            {"waiting", "Waiting Screen"},
-            {"generating", "World Generation"}
+            {"wall", trc("game_state.wall")},
+            {"inworld,cursor_free", trc("game_state.inworld_free")},
+            {"inworld,cursor_grabbed", trc("game_state.inworld_grabbed")},
+            {"title", trc("game_state.title")},
+            {"waiting", trc("game_state.waiting")},
+            {"generating", trc("game_state.generating")}
         };
 
     auto getGameStateFriendlyName = [&](const std::string& gameState) {
@@ -3041,7 +3027,7 @@ void RenderSettingsGUI() {
             }
             s_bindingInitialized = true;
         }
-        ImGui::OpenPopup("Bind Hotkey");
+        ImGui::OpenPopup(trc("hotkeys.bind_hotkey"));
     } else {
         s_bindingKeys.clear();
         s_hadKeysPressed = false;
@@ -3050,13 +3036,13 @@ void RenderSettingsGUI() {
     }
 
     if (ImGui::BeginPopupModal(
-            "Bind Hotkey", NULL,
+            trc("hotkeys.bind_hotkey"), NULL,
             ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar
         )) {
-        ImGui::Text("Press a key or key combination.");
-        ImGui::Text("Release all keys to confirm.");
-        ImGui::Text("Press Backspace/Delete to clear.");
-        ImGui::Text("Press ESC to cancel.");
+        ImGui::Text("%s", trc("hotkeys.bind_hotkey.tooltip.prompt"));
+        ImGui::Text("%s", trc("hotkeys.bind_hotkey.tooltip.confirm"));
+        ImGui::Text("%s", trc("hotkeys.bind_hotkey.tooltip.clear"));
+        ImGui::Text("%s", trc("hotkeys.bind_hotkey.tooltip.cancel"));
         ImGui::Separator();
 
         static uint64_t s_lastBindingInputSeqHotkeyBind = 0;
@@ -3143,7 +3129,7 @@ void RenderSettingsGUI() {
             if (!canClear) {
                 ImGui::BeginDisabled();
             }
-            if (ImGui::Button("Clear")) {
+            if (ImGui::Button(trc("button.clear"))) {
                 finalize_bind({});
                 ImGui::EndPopup();
                 return;
@@ -3153,7 +3139,7 @@ void RenderSettingsGUI() {
             }
 
             ImGui::SameLine();
-            if (ImGui::Button("Cancel")) {
+            if (ImGui::Button(trc("button.cancel"))) {
                 Log("Binding cancelled from Cancel button.");
                 s_mainHotkeyToBind = -1;
                 s_sensHotkeyToBind = -1;
@@ -3258,12 +3244,11 @@ void RenderSettingsGUI() {
             return;
         }
 
+        std::string combo = tr("hotkeys.none");
         if (!s_bindingKeys.empty()) {
-            std::string combo = GetKeyComboString(s_bindingKeys);
-            ImGui::Text("Current: %s", combo.c_str());
-        } else {
-            ImGui::Text("Current: [None]");
+            combo = GetKeyComboString(s_bindingKeys);
         }
+        ImGui::Text("%s", ftrc("hotkeys.bind_hotkey.current", combo));
 
         ImGui::EndPopup();
     }
@@ -3303,8 +3288,7 @@ void RenderSettingsGUI() {
         ImGui::SetNextWindowSize(ImVec2(850 * scaleFactor, 650 * scaleFactor), ImGuiCond_Always);
     }
 
-    std::string windowTitle = "Toolscreen v" + GetToolscreenVersionString() +
-                              " by jojoe77777 | NineBlood build | 汉化";
+    std::string windowTitle = ftr("window.title", GetToolscreenVersionString());
 
     bool windowOpen = true;
     if (ImGui::Begin(windowTitle.c_str(), &windowOpen, ImGuiWindowFlags_NoCollapse)) {
@@ -3345,7 +3329,7 @@ void RenderSettingsGUI() {
                               )
                                   .count() < 3;
 
-            const char* buttonLabel = showCopied ? "Copied!" : "Screenshot";
+            const char* buttonLabel = showCopied ? trc("button.screenshot.copied") : trc("button.screenshot");
             float       buttonWidth = ImGui::CalcTextSize(buttonLabel).x +
                                 ImGui::GetStyle().FramePadding.x * 2.0f;
 
@@ -3363,12 +3347,12 @@ void RenderSettingsGUI() {
 
         {
             bool isAdvanced = !g_config.basicModeEnabled;
-            if (ImGui::RadioButton("Basic", !isAdvanced)) {
+            if (ImGui::RadioButton(trc("config_mode.basic"), !isAdvanced)) {
                 g_config.basicModeEnabled = true;
                 g_configIsDirty           = true;
             }
             ImGui::SameLine();
-            if (ImGui::RadioButton("Advanced", isAdvanced)) {
+            if (ImGui::RadioButton(trc("config_mode.advanced"), isAdvanced)) {
                 g_config.basicModeEnabled = false;
                 g_configIsDirty           = true;
             }

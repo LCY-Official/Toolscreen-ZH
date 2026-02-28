@@ -1,14 +1,14 @@
-if (ImGui::BeginTabItem("Misc")) {
+if (ImGui::BeginTabItem(trc("tabs.misc"))) {
     g_currentlyEditingMirror = "";
     g_imageDragMode.store(false);
     g_windowOverlayDragMode.store(false);
 
-    ImGui::SeparatorText("About");
+    ImGui::SeparatorText(trc("label.about"));
 
     // Static flag for license popup
     static bool s_showLicensesPopup = false;
 
-    if (ImGui::Button("Open-Source Licenses")) {
+    if (ImGui::Button(trc("button.licenses"))) {
         s_showLicensesPopup = true;
     }
     ImGui::SameLine();
@@ -19,7 +19,7 @@ if (ImGui::BeginTabItem("Misc")) {
 
     ImGui::Spacing();
     ImGui::SeparatorText("Toolscreen");
-    if (ImGui::Button("Open Config Folder")) {
+    if (ImGui::Button(trc("button.open_config"))) {
         if (g_toolscreenPath.empty()) {
             Log("ERROR: Unable to open config folder because toolscreen path is "
                 "empty.");
@@ -36,14 +36,14 @@ if (ImGui::BeginTabItem("Misc")) {
 
     // License popup modal
     if (s_showLicensesPopup) {
-        ImGui::OpenPopup("Open-Source Licenses");
+        ImGui::OpenPopup(trc("popup.licenses"));
     }
 
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
     ImGui::SetNextWindowSize(ImVec2(700, 500), ImGuiCond_Appearing);
 
-    if (ImGui::BeginPopupModal("Open-Source Licenses", &s_showLicensesPopup, ImGuiWindowFlags_NoResize)) {
+    if (ImGui::BeginPopupModal(trc("popup.licenses"), &s_showLicensesPopup, ImGuiWindowFlags_NoResize)) {
         ImGui::TextWrapped(
             "This software uses the following open-source libraries:"
         );

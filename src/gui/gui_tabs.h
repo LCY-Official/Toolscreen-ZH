@@ -1,5 +1,19 @@
 #pragma once
 
+#include <GL/glew.h>
+#include <Shlwapi.h>
+#include <commdlg.h>
+
+#include <algorithm>
+#include <atomic>
+#include <cctype>
+#include <chrono>
+#include <filesystem>
+#include <fstream>
+#include <future>
+#include <shared_mutex>
+#include <string>
+#include <thread>
 
 #include "fake_cursor.h"
 #include "gui.h"
@@ -9,22 +23,9 @@
 #include "profiler.h"
 #include "render.h"
 #include "stb_image.h"
+#include "translation.h"
 #include "utils.h"
 #include "window_overlay.h"
-#include <GL/glew.h>
-#include <Shlwapi.h>
-#include <algorithm>
-#include <atomic>
-#include <cctype>
-#include <chrono>
-#include <commdlg.h>
-#include <filesystem>
-#include <fstream>
-#include <future>
-#include <shared_mutex>
-#include <string>
-#include <thread>
-
 
 void HelpMarker(const char* desc);
 
@@ -36,27 +37,31 @@ bool SpinnerFloat(const char* id_label, float* v, float step = 0.1f, float min_v
 
 
 inline const std::vector<std::pair<const char*, const char*>>& GetRelativeToOptions() {
-    static const std::vector<std::pair<const char*, const char*>> options = { { "topLeftViewport", "Top Left (Viewport)" },
-                                                                              { "topRightViewport", "Top Right (Viewport)" },
-                                                                              { "bottomLeftViewport", "Bottom Left (Viewport)" },
-                                                                              { "bottomRightViewport", "Bottom Right (Viewport)" },
-                                                                              { "centerViewport", "Center (Viewport)" },
-                                                                              { "pieLeft", "Pie-Chart Left" },
-                                                                              { "pieRight", "Pie-Chart Right" },
-                                                                              { "topLeftScreen", "Top Left (Screen)" },
-                                                                              { "topRightScreen", "Top Right (Screen)" },
-                                                                              { "bottomLeftScreen", "Bottom Left (Screen)" },
-                                                                              { "bottomRightScreen", "Bottom Right (Screen)" },
-                                                                              { "centerScreen", "Center (Screen)" } };
+    // clang-format off
+    static const std::vector<std::pair<const char*, const char*>> options = {
+        {"topLeftViewport", trc("position.top_left_viewport")},
+        {"topRightViewport", trc("position.top_right_viewport")},
+        {"bottomLeftViewport", trc("position.bottom_left_viewport")},
+        {"bottomRightViewport", trc("position.bottom_right_viewport")},
+        {"centerViewport", trc("position.center_viewport")},
+        {"pieLeft", trc("position.pie_left")},
+        {"pieRight", trc("position.pie_right")},
+        {"topLeftScreen", trc("position.top_left_screen")},
+        {"topRightScreen", trc("position.top_right_screen")},
+        {"bottomLeftScreen", trc("position.bottom_left_screen")},
+        {"bottomRightScreen", trc("position.bottom_right_screen")},
+        {"centerScreen", trc("position.center_screen")}
+    };
+    //clang-format on
     return options;
 }
 
 inline const std::vector<std::pair<const char*, const char*>>& GetImageRelativeToOptions() {
-    static const std::vector<std::pair<const char*, const char*>> options = { { "topLeft", "Top Left" },
-                                                                              { "topRight", "Top Right" },
-                                                                              { "bottomLeft", "Bottom Left" },
-                                                                              { "bottomRight", "Bottom Right" },
-                                                                              { "center", "Center" } };
+    static const std::vector<std::pair<const char*, const char*>> options = { { "topLeft", trc("position.top_left") },
+                                                                              { "topRight", trc("position.top_right") },
+                                                                              { "bottomLeft", trc("position.bottom_left") },
+                                                                              { "bottomRight", trc("position.bottom_right") },
+                                                                              { "center", trc("position.center") } };
     return options;
 }
 
@@ -80,12 +85,12 @@ inline const std::vector<const char*>& GetGuiGameStates() {
 }
 
 inline const std::vector<std::pair<const char*, const char*>>& GetGameStateDisplayNames() {
-    static const std::vector<std::pair<const char*, const char*>> names = { { "wall", "Wall Screen" },
-                                                                            { "inworld,cursor_free", "In World (Cursor Free)" },
-                                                                            { "inworld,cursor_grabbed", "In World (Cursor Grabbed)" },
-                                                                            { "title", "Title Screen" },
-                                                                            { "waiting", "Waiting Screen" },
-                                                                            { "generating", "World Generation" } };
+    static const std::vector<std::pair<const char*, const char*>> names = { { "wall", trc("game_state.wall") },
+                                                                            { "inworld,cursor_free", trc("game_state.inworld_free") },
+                                                                            { "inworld,cursor_grabbed", trc("game_state.inworld_grabbed") },
+                                                                            { "title", trc("game_state.title") },
+                                                                            { "waiting", trc("game_state.waiting") },
+                                                                            { "generating", trc("game_state.generating") } };
     return names;
 }
 
