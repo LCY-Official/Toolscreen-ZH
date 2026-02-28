@@ -1,0 +1,12 @@
+{
+    "langs": [
+        {
+            "name": "English",
+            "identifier": "en"
+        },
+        {
+            "name": "简体中文",
+            "identifier": "zh_cn"
+        }
+    ]
+}
