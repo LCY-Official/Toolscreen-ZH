@@ -28,17 +28,17 @@ file(GLOB TOOLSCREEN_LANGS CONFIGURE_DEPENDS "resources/lang/*.json")
 
 foreach(BITMAP_FILENAME IN LISTS TOOLSCREEN_BITMAPS)
     get_filename_component(BITMAP_NAME ${BITMAP_FILENAME} NAME_WE)
-    string(APPEND TOOLSCREEN_RES_WIN_RC_ENTRIES "bitmap_${BITMAP_NAME} RCDATA ${BITMAP_FILENAME}\n")
+    string(APPEND TOOLSCREEN_RES_WIN_RC_ENTRIES "bitmap_${BITMAP_NAME} RCDATA \"${BITMAP_FILENAME}\"\n")
 endforeach()
 
 foreach(LANG_FILENAME IN LISTS TOOLSCREEN_LANGS)
     get_filename_component(LANG_NAME ${LANG_FILENAME} NAME_WE)
-    string(APPEND TOOLSCREEN_RES_WIN_RC_ENTRIES "lang_${LANG_NAME} RCDATA ${LANG_FILENAME}\n")
+    string(APPEND TOOLSCREEN_RES_WIN_RC_ENTRIES "lang_${LANG_NAME} RCDATA \"${LANG_FILENAME}\"\n")
 
     string(APPEND TOOLSCREEN_LANGS_ARRAY "\"${LANG_NAME}\", ")
 endforeach()
 
-string(APPEND TOOLSCREEN_RES_WIN_RC_ENTRIES "config_default RCDATA ${CMAKE_SOURCE_DIR}\\resources\\default.toml\n")
+string(APPEND TOOLSCREEN_RES_WIN_RC_ENTRIES "config_default RCDATA \"${CMAKE_SOURCE_DIR}\\resources\\default.toml\"\n")
 
 configure_file(
     resources/resources.rc.in
