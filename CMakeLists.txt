@@ -69,6 +69,7 @@ add_library(Toolscreen SHARED
     src/imgui_input_queue.cpp
     src/shared_contexts.cpp
     src/utils.cpp
+    src/translation.cpp
     src/version.cpp
     src/virtual_camera.cpp
     src/window_overlay.cpp

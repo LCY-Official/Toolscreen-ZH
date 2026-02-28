@@ -9,6 +9,7 @@
 #include "render.h"
 #include "render_thread.h"
 #include "shared_contexts.h"
+#include "translation.h"
 #include "utils.h"
 #include "version.h"
 #include "virtual_camera.h"
@@ -2325,6 +2326,12 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
         }
 
         LoadConfig();
+
+        if (!LoadTranslations(g_config.lang)) {
+            Log("FATAL: Could not load translations of " + g_config.lang);
+            return TRUE;
+        }
+        LogCategory("init", "Translations initialized");
 
         WCHAR dir[MAX_PATH];
         if (GetCurrentDirectoryW(MAX_PATH, dir) > 0) {
