@@ -167,3 +167,11 @@ CompileFlags:
   Add: -ferror-limit=0
   Remove:
     - -mno-direct-extern-access
+
+---
+
+If:
+  PathMatch: ".*\\.inl"
+Diagnostics:
+  Suppress:
+    - expected_unqualified_id
