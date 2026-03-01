@@ -839,8 +839,7 @@ static void RenderTransitionSettingsHorizontal(ModeConfig& mode, const std::stri
 
             ImGui::Spacing();
             ImGui::Separator();
-            if (ImGui::Checkbox(("Relative Stretching##" + idSuffix).c_str(), &mode.relativeStretching)) {
-                g_configIsDirty = true;
+if (ImGui::Checkbox((std::string(trc("transition.relative_stretching")) + "##" + idSuffix).c_str(), &mode.relativeStretching)) {                g_configIsDirty = true;
             }
             if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip("%s", trc("transition.tooltip.relative_streching"));
@@ -871,7 +870,7 @@ static void RenderTransitionSettingsHorizontal(ModeConfig& mode, const std::stri
     ImGui::PopStyleVar();
 
     ImGui::Spacing();
-    if (ImGui::Button((tr("preview_transition") + "##" + idSuffix).c_str())) {
+    if (ImGui::Button((tr("transition.preview_transition") + "##" + idSuffix).c_str())) {
         std::lock_guard<std::mutex> pendingLock(g_pendingModeSwitchMutex);
         g_pendingModeSwitch.pending           = true;
         g_pendingModeSwitch.isPreview         = true;
