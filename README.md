@@ -1,4 +1,4 @@
-# Toolscreen - NineBlood version
+# Toolscreen - Chinese version
 
 > Original version by [jojoe77777](https://github.com/jojoe77777).
 
