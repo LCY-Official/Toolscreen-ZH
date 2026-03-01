@@ -1,17 +1,17 @@
-if (ImGui::BeginTabItem("Settings")) {
+if (ImGui::BeginTabItem(trc("tabs.settings"))) {
     g_currentlyEditingMirror = "";
     g_imageDragMode.store(false);
     g_windowOverlayDragMode.store(false);
 
     SliderCtrlClickTip();
 
-    ImGui::SeparatorText("Performance");
+    ImGui::SeparatorText(trc("settings.performance"));
 
     ImGui::Text(trc("label.fps_limit"));
     ImGui::SetNextItemWidth(600);
     int fpsLimitValue = (g_config.fpsLimit == 0) ? 1001 : g_config.fpsLimit;
     bool sliderActive = ImGui::IsItemActive() || ImGui::IsItemHovered();
-    if (ImGui::SliderInt("##fpsLimit", &fpsLimitValue, 30, 1001, fpsLimitValue == 1001 ? "Unlimited" : "%d fps")) {
+    if (ImGui::SliderInt("##fpsLimit", &fpsLimitValue, 30, 1001, fpsLimitValue == 1001 ? trc("settings.performance_unlimited") : "%d fps")) {
         g_config.fpsLimit = (fpsLimitValue == 1001) ? 0 : fpsLimitValue;
         g_configIsDirty = true;
     }
@@ -19,11 +19,10 @@ if (ImGui::BeginTabItem("Settings")) {
     HelpMarker(trc("tooltip.fps_limit.advanced"));
 
     ImGui::Spacing();
-    ImGui::SeparatorText("Capture/Streaming");
-    if (ImGui::Checkbox("Hide animations in game", &g_config.hideAnimationsInGame)) { g_configIsDirty = true; }
+    ImGui::SeparatorText(trc("settings.capture_streaming"));
+    if (ImGui::Checkbox(trc("settings.hide_animations_in_game"), &g_config.hideAnimationsInGame)) { g_configIsDirty = true; }
     ImGui::SameLine();
-    HelpMarker("When enabled, mode transitions appear instant on your screen,\n"
-               "but OBS Game Capture will show the animations.");
+    HelpMarker(trc("tooltip.toggle_animations_in_game"));
 
 /*    if (ImGui::Checkbox("Disable Fullscreen Prompt", &g_config.disableFullscreenPrompt)) { g_configIsDirty = true; }
     ImGui::SameLine();
@@ -35,12 +34,12 @@ if (ImGui::BeginTabItem("Settings")) {
     HelpMarker("Disables the configure toast prompt (toast1) shown in windowed mode.");*/
 
     ImGui::Spacing();
-    ImGui::SeparatorText("Mirrors");
+    ImGui::SeparatorText(trc("settings.mirrors"));
     {
-        const char* gammaModes[] = { "Auto", "Assume sRGB", "Assume Linear" };
+        const char* gammaModes[] = { trc("settings.mirrors_auto"), trc("settings.mirrors_assume_srgb"), trc("settings.mirrors_assume_linear") };
         int gm = static_cast<int>(g_config.mirrorGammaMode);
         ImGui::SetNextItemWidth(250);
-        if (ImGui::Combo("Match Colorspace", &gm, gammaModes, IM_ARRAYSIZE(gammaModes))) {
+        if (ImGui::Combo(trc("settings.mirrors_match_colorspace"), &gm, gammaModes, IM_ARRAYSIZE(gammaModes))) {
             g_config.mirrorGammaMode = static_cast<MirrorGammaMode>(gm);
             g_configIsDirty = true;
 
@@ -53,18 +52,14 @@ if (ImGui::BeginTabItem("Settings")) {
             }
         }
         ImGui::SameLine();
-        HelpMarker("Controls how mirror color matching interprets the captured pixels.\n"
-                   "Applies globally to all mirrors.\n\n"
-                   "Auto: tries both sRGB-space and linear-space matching and uses the better match.\n"
-                   "Assume sRGB: converts sampled pixels + target colors to linear for matching.\n"
-                   "Assume Linear: treats sampled pixels as linear; converts only target colors.");
+        HelpMarker(trc("settings.tooltip.colorspace"));
     }
 
     bool driverInstalled = IsVirtualCameraDriverInstalled();
     bool inUseByOBS = driverInstalled && IsVirtualCameraInUseByOBS();
     ImGui::BeginDisabled(!driverInstalled || inUseByOBS);
     bool vcEnabled = g_config.debug.virtualCameraEnabled;
-    if (ImGui::Checkbox("Enable Virtual Camera", &vcEnabled)) {
+    if (ImGui::Checkbox(trc("settings.enable_virtual_camera"), &vcEnabled)) {
         g_config.debug.virtualCameraEnabled = vcEnabled;
         g_configIsDirty = true;
         if (vcEnabled) {
@@ -78,19 +73,16 @@ if (ImGui::BeginTabItem("Settings")) {
     ImGui::EndDisabled();
     ImGui::SameLine();
     if (!driverInstalled) {
-        ImGui::TextDisabled("(OBS Virtual Camera not installed)");
+        ImGui::TextDisabled(trc("settings_camera_not_installed"));
     } else if (inUseByOBS) {
-        ImGui::TextDisabled("(In use by OBS)");
+        ImGui::TextDisabled(trc("settings.virtual.camera_in_use"));
     } else {
-        HelpMarker("Outputs the game, including overlays, to the OBS Virtual Camera.\n"
-                   "You can use this to screenshare in Discord, or to capture in OBS.\n\n"
-                   "Requires OBS Virtual Camera driver to be installed.\n"
-                   "Works independently of OBS being open.");
+        HelpMarker(trc("settings.tooltip.virtual_camera"));
     }
 
     ImGui::BeginDisabled(!driverInstalled || inUseByOBS || !vcEnabled);
     ImGui::Indent();
-    if (ImGui::SliderInt("Camera FPS", &g_config.debug.virtualCameraFps, 15, 120, "%d fps")) { g_configIsDirty = true; }
+    if (ImGui::SliderInt(trc("settings.camera_fps"), &g_config.debug.virtualCameraFps, 15, 120, "%d fps")) { g_configIsDirty = true; }
     ImGui::Unindent();
     ImGui::EndDisabled();
 
@@ -124,7 +116,7 @@ if (ImGui::BeginTabItem("Settings")) {
                 }
             }
             ImGui::SameLine();
-            if (ImGui::Button("Cancel", ImVec2(80, 0))) { ImGui::CloseCurrentPopup(); }
+            if (ImGui::Button((trc("button.cancel")), ImVec2(80, 0))) { ImGui::CloseCurrentPopup(); }
 
             ImGui::EndPopup();
         }

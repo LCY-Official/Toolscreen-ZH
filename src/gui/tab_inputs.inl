@@ -206,7 +206,7 @@ if (ImGui::BeginTabItem(trc("tabs.inputs"))) {
                 if (ImGui::BeginPopupModal(trc("inputs.reset_cursors_to_defaults"), NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
                     ImGui::TextColored(ImVec4(1.0f, 0.7f, 0.0f, 1.0f), trc("label.warning"));
                     ImGui::Text(
-                        "This will reset all cursor settings to their default values."
+                        trc("inputs.reset_cursors_to_defaults_tip")
                     );
                     ImGui::Text(trc("label.action_cannot_be_undone"));
                     ImGui::Separator();
@@ -497,7 +497,7 @@ if (ImGui::BeginTabItem(trc("tabs.inputs"))) {
                             fallbackVk == VK_XBUTTON2) {
                             return VkToString(fallbackVk);
                         }
-                        return std::string("[Unbound]");
+                        return std::string(trc("inputs.keyboard_layout_unbound"));
                     }
 
                     DWORD scanDisplayVK = MapVirtualKey(scan, MAPVK_VSC_TO_VK_EX);
@@ -513,14 +513,14 @@ if (ImGui::BeginTabItem(trc("tabs.inputs"))) {
                     if (GetKeyNameTextA(keyNameLParam, keyName, sizeof(keyName)) > 0) {
                         return std::string(keyName);
                     }
-                    return std::string("[Unknown]");
+                    return std::string(trc("inputs.keyboard_layout_unknown"));
                 };
 
                 ImGui::SetNextWindowBgAlpha(1.0f);
                 if (s_keyboardLayoutOpen) {
                     ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(18, 19, 22, 255));
                     const bool keyboardLayoutWindowVisible = ImGui::Begin(
-                        "Keyboard Layout", &s_keyboardLayoutOpen,
+                        trc("inputs.keyboard_layout"), &s_keyboardLayoutOpen,
                         ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoNavInputs |
                             ImGuiWindowFlags_NoCollapse
                     );
@@ -552,16 +552,16 @@ if (ImGui::BeginTabItem(trc("tabs.inputs"))) {
 
                         {
                             float scalePct = s_keyboardLayoutScale * 100.0f;
-                            ImGui::TextUnformatted("Scale:");
+                            ImGui::TextUnformatted(trc("inputs.keyboard_layout_scale"));
                             ImGui::SameLine();
                             ImGui::SetNextItemWidth(220.0f);
                             if (ImGui::SliderFloat("##keyboardLayoutScalePct", &scalePct, 60.0f, 300.0f, "%.0f%%", ImGuiSliderFlags_AlwaysClamp)) {
                                 s_keyboardLayoutScale = scalePct / 100.0f;
                             }
                             ImGui::SameLine();
-                            HelpMarker("Visual scale for the keyboard layout preview only.");
+                            HelpMarker(trc("inputs.tooltip.keyboard_layout_scale"));
 
-                            ImGui::TextDisabled("Tip: Right-click a key to configure it.");
+                            ImGui::TextDisabled(trc("inputs.keyboard_layout_tip"));
 
                             ImGui::Spacing();
                             ImGui::Separator();

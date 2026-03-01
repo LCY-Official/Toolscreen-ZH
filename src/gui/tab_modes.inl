@@ -732,12 +732,12 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                         ImGui::Separator();
                         ImGui::Text("%s:", trc("modes.eyezoom.bg_gradient_animation"));
                         const char* animTypeNames[] = {
-                            trc("modes.eyezoom.bg_gradient_animation.none"),
-                            trc("modes.eyezoom.bg_gradient_animation.rotate"),
-                            trc("modes.eyezoom.bg_gradient_animation.slide"),
-                            trc("modes.eyezoom.bg_gradient_animation.wave"),
-                            trc("modes.eyezoom.bg_gradient_animation.spiral"),
-                            trc("modes.eyezoom.bg_gradient_animation.fade")
+                            trc("modes.eyezoom.bg_gradient_animation_none"),
+                            trc("modes.eyezoom.bg_gradient_animation_rotate"),
+                            trc("modes.eyezoom.bg_gradient_animation_slide"),
+                            trc("modes.eyezoom.bg_gradient_animation_wave"),
+                            trc("modes.eyezoom.bg_gradient_animation_piral"),
+                            trc("modes.eyezoom.bg_gradient_animation_fade")
                         };
                         int         currentAnimType = static_cast<int>(mode.background.gradientAnimation);
                         ImGui::SetNextItemWidth(120);
@@ -1117,7 +1117,7 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                         }
                     }
                     ImGui::SameLine();
-                    if (ImGui::RadioButton((tr("modes.image") + "##Preemptive").c_str(), mode.background.selectedMode == "image")) {
+                    if (ImGui::RadioButton((tr("modes.images") + "##Preemptive").c_str(), mode.background.selectedMode == "image")) {
                         if (mode.background.selectedMode != "image") {
                             mode.background.selectedMode = "image";
                             g_configIsDirty              = true;
@@ -1185,12 +1185,12 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                         ImGui::Separator();
                         ImGui::Text("%s:", trc("modes.gradient_animation"));
                         const char* animTypeNames[] = {
-                            trc("modes.gradient_animation_none"),
-                            trc("modes.gradient_animation_rotate"),
-                            trc("modes.gradient_animation_slide"),
-                            trc("modes.gradient_animation_wave"),
-                            trc("modes.gradient_animation_spiral"),
-                            trc("modes.gradient_animation_fade")
+                            trc("modes.eyezoom.bg_gradient_animation_none"),
+                            trc("modes.eyezoom.bg_gradient_animation_rotate"),
+                            trc("modes.eyezoom.bg_gradient_animation_slide"),
+                            trc("modes.eyezoom.bg_gradient_animation_wave"),
+                            trc("modes.eyezoom.bg_gradient_animation_piral"),
+                            trc("modes.eyezoom.bg_gradient_animation_fade")
                         };
                         int         currentAnimType = static_cast<int>(mode.background.gradientAnimation);
                         ImGui::SetNextItemWidth(120);
@@ -1396,7 +1396,7 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                 ImGui::Separator();
                 if (ImGui::TreeNode((tr("modes.transition_settings") + "##Preemptive").c_str())) {
                     RenderTransitionSettingsHorizontal(mode, "Preemptive");
-                    if (ImGui::Checkbox((tr("Slide Mirrors In") + "##Preemptive").c_str(), &mode.slideMirrorsIn)) {
+                    if (ImGui::Checkbox((tr("transition.relative_slide_mirrors_in") + "##Preemptive").c_str(), &mode.slideMirrorsIn)) {
                         g_configIsDirty = true;
                     }
                     if (ImGui::IsItemHovered()) {
@@ -1603,7 +1603,7 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                 }
 
                 if (ImGui::TreeNode((tr("modes.background") + "##Thin").c_str())) {
-                    if (ImGui::RadioButton((tr("modes.background_color") + "##Thin").c_str(), mode.background.selectedMode == "color")) {
+                    if (ImGui::RadioButton((tr("modes.eyezoom.background_color") + "##Thin").c_str(), mode.background.selectedMode == "color")) {
                         mode.background.selectedMode = "color";
                         g_configIsDirty              = true;
                     }
@@ -1620,7 +1620,7 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                         }
                     }
                     ImGui::SameLine();
-                    if (ImGui::RadioButton((tr("modes.image") + "##Thin").c_str(), mode.background.selectedMode == "image")) {
+                    if (ImGui::RadioButton((tr("modes.images") + "##Thin").c_str(), mode.background.selectedMode == "image")) {
                         if (mode.background.selectedMode != "image") {
                             mode.background.selectedMode = "image";
                             g_configIsDirty              = true;
@@ -1681,12 +1681,12 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                         ImGui::Separator();
                         ImGui::Text("%s:", trc("modes.gradient_animation"));
                         const char* animTypeNamesThin[] = {
-                            trc("modes.animation_none"),
-                            trc("modes.animation_rotate"),
-                            trc("modes.animation_slide"),
-                            trc("modes.animation_wave"),
-                            trc("modes.animation_spiral"),
-                            trc("modes.animation_fade")
+                            trc("modes.eyezoom.bg_gradient_animation_none"),
+                            trc("modes.eyezoom.bg_gradient_animation_rotate"),
+                            trc("modes.eyezoom.bg_gradient_animation_slide"),
+                            trc("modes.eyezoom.bg_gradient_animation_wave"),
+                            trc("modes.eyezoom.bg_gradient_animation_piral"),
+                            trc("modes.eyezoom.bg_gradient_animation_fade")
                         };
                         int         currentAnimTypeThin = static_cast<int>(mode.background.gradientAnimation);
                         ImGui::SetNextItemWidth(120);
@@ -1740,11 +1740,11 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                 }
 
                 if (ImGui::TreeNode((tr("modes.border_settings") + "##Thin").c_str())) {
-                    if (ImGui::Checkbox((tr("modes.border_enabled") + "##Thin").c_str(), &mode.border.enabled)) {
+                    if (ImGui::Checkbox((tr("modes.enable_border") + "##Thin").c_str(), &mode.border.enabled)) {
                         g_configIsDirty = true;
                     }
                     if (mode.border.enabled) {
-                        ImGui::Text("Color:");
+                        ImGui::Text(trc("modes.color"));
                         ImVec4 borderCol = ImVec4(mode.border.color.r, mode.border.color.g, mode.border.color.b, 1.0f);
                         if (ImGui::ColorEdit3("##BorderColorThin", (float*)&borderCol, ImGuiColorEditFlags_NoInputs)) {
                             mode.border.color = {borderCol.x, borderCol.y, borderCol.z};
@@ -2062,7 +2062,7 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                 }
 
                 if (ImGui::TreeNode((tr("modes.background") + "##Wide").c_str())) {
-                    if (ImGui::RadioButton((tr("modes.background_color") + "##Wide").c_str(), mode.background.selectedMode == "color")) {
+                    if (ImGui::RadioButton((tr("modes.eyezoom.background_color") + "##Wide").c_str(), mode.background.selectedMode == "color")) {
                         mode.background.selectedMode = "color";
                         g_configIsDirty              = true;
                     }
@@ -2079,7 +2079,7 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                         }
                     }
                     ImGui::SameLine();
-                    if (ImGui::RadioButton((tr("modes.image") + "##Wide").c_str(), mode.background.selectedMode == "image")) {
+                    if (ImGui::RadioButton((tr("modes.images") + "##Wide").c_str(), mode.background.selectedMode == "image")) {
                         if (mode.background.selectedMode != "image") {
                             mode.background.selectedMode = "image";
                             g_configIsDirty              = true;
@@ -2140,12 +2140,12 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                         ImGui::Separator();
                         ImGui::Text("$s:", trc("modes.animation"));
                         const char* animTypeNamesWide[] = {
-                            trc("modes.animation_none"),
-                            trc("modes.animation_rotate"),
-                            trc("modes.animation_slide"),
-                            trc("modes.animation_wave"),
-                            trc("modes.animation_spiral"),
-                            trc("modes.animation_fade")
+                            trc("modes.eyezoom.bg_gradient_animation_none"),
+                            trc("modes.eyezoom.bg_gradient_animation_rotate"),
+                            trc("modes.eyezoom.bg_gradient_animation_slide"),
+                            trc("modes.eyezoom.bg_gradient_animation_wave"),
+                            trc("modes.eyezoom.bg_gradient_animation_piral"),
+                            trc("modes.eyezoom.bg_gradient_animation_fade")
                         };
                         int         currentAnimTypeWide = static_cast<int>(mode.background.gradientAnimation);
                         ImGui::SetNextItemWidth(120);
@@ -2199,7 +2199,7 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                 }
 
                 if (ImGui::TreeNode((tr("modes.border_settings") + "##Wide").c_str())) {
-                    if (ImGui::Checkbox((tr("modes.border_enabled") + "##Wide").c_str(), &mode.border.enabled)) {
+                    if (ImGui::Checkbox((tr("modes.enable_border") + "##Wide").c_str(), &mode.border.enabled)) {
                         g_configIsDirty = true;
                     }
                     if (mode.border.enabled) {
@@ -2650,7 +2650,7 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                 ImGui::Separator();
 
                 if (ImGui::TreeNode((tr("modes.background")+"##CustomMode").c_str())) {
-                    if (ImGui::RadioButton(trc("modes.background_color"), mode.background.selectedMode == "color")) {
+                    if (ImGui::RadioButton(trc("modes.eyezoom.background_color"), mode.background.selectedMode == "color")) {
                         if (mode.background.selectedMode != "color") {
                             mode.background.selectedMode = "color";
                             g_configIsDirty              = true;
@@ -2669,7 +2669,7 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                         }
                     }
                     ImGui::SameLine();
-                    if (ImGui::RadioButton(trc("modes.image"), mode.background.selectedMode == "image")) {
+                    if (ImGui::RadioButton(trc("modes.images"), mode.background.selectedMode == "image")) {
                         if (mode.background.selectedMode != "image") {
                             mode.background.selectedMode = "image";
                             g_configIsDirty              = true;
@@ -2732,12 +2732,12 @@ if (ImGui::BeginTabItem(trc("tabs.modes"))) {
                         ImGui::Separator();
                         ImGui::Text("%s:", trc("modes.gradient_animation"));
                         const char* animTypeNamesCustom[] = {
-                            trc("modes.gradient_animation_none"),
-                            trc("modes.gradient_animation_rotate"),
-                            trc("modes.gradient_animation_slide"),
-                            trc("modes.gradient_animation_wave"),
-                            trc("modes.gradient_animation_spiral"),
-                            trc("modes.gradient_animation_fade")
+                            trc("modes.eyezoom.bg_gradient_animation_none"),
+                            trc("modes.eyezoom.bg_gradient_animation_rotate"),
+                            trc("modes.eyezoom.bg_gradient_animation_slide"),
+                            trc("modes.eyezoom.bg_gradient_animation_wave"),
+                            trc("modes.eyezoom.bg_gradient_animation_piral"),
+                            trc("modes.eyezoom.bg_gradient_animation_fade")
                         };
                         int         currentAnimTypeCustom = static_cast<int>(mode.background.gradientAnimation);
                         ImGui::SetNextItemWidth(120);

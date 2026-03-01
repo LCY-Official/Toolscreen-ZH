@@ -199,7 +199,7 @@ if (ImGui::BeginTabItem(trc("tabs.mouse"))) {
 
         if (ImGui::BeginPopupModal(trc("tabs.mouse.reset_cursors_to_defaults"), NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
             ImGui::TextColored(ImVec4(1.0f, 0.7f, 0.0f, 1.0f), "%s", trc("label.warning"));
-            ImGui::Text("This will reset all cursor settings to their default values.");
+            ImGui::Text(trc("tabs.mouse.tooltip.reset_cursors_to_defaults"));
             ImGui::Text(trc("label.action_cannot_be_undone"));
             ImGui::Separator();
             if (ImGui::Button(trc("button.confirm_reset"), ImVec2(120, 0))) {

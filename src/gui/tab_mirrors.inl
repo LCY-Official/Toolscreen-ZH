@@ -201,7 +201,7 @@ if (ImGui::BeginTabItem(trc("tabs.mirrors"))) {
                 if (mirror.border.staticThickness > 0) {
                     ImGui::Text("%s", trc("mirrors.border_shape"));
                     ImGui::NextColumn();
-                    const char* shapes[]     = {"Rectangle", "Circle/Ellipse"};
+                    const char* shapes[]     = {trc("mirrors.shape.rectangle"), trc("mirrors.shape.circle_ellipse")};
                     int         currentShape = static_cast<int>(mirror.border.staticShape);
                     ImGui::PushItemWidth(140);
                     if (ImGui::Combo("##staticShape", &currentShape, shapes, IM_ARRAYSIZE(shapes))) {
@@ -282,7 +282,7 @@ if (ImGui::BeginTabItem(trc("tabs.mirrors"))) {
             ImGui::NextColumn();
             ImGui::TextDisabled("%s", trc("mirrors.tooltip.output_scale"));
 
-            if (ImGui::Checkbox("Separate X/Y##scale", &mirror.output.separateScale)) {
+            if (ImGui::Checkbox(trc("mirrors.separate_x_y"), &mirror.output.separateScale)) {
                 g_configIsDirty = true;
                 if (mirror.output.separateScale) {
                     mirror.output.scaleX = mirror.output.scale;
@@ -1057,7 +1057,7 @@ if (ImGui::BeginTabItem(trc("tabs.mirrors"))) {
         g_configIsDirty = true;
     }
 
-    if (ImGui::Button(trc("mirrors.add_group"))) {
+    if (ImGui::Button(trc("mirrors.add_new_group"))) {
         MirrorGroupConfig newGroup;
         newGroup.name              = tr("mirrors.add_group") + " " + std::to_string(g_config.mirrorGroups.size() + 1);
         newGroup.output.relativeTo = "centerViewport";

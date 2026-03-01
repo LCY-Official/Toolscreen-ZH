@@ -51,7 +51,7 @@ if (ImGui::BeginTabItem(trc("tabs.images"))) {
                 ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.8f, 0.3f, 0.3f, 1.0f));
             }
 
-            if (ImGui::InputText("Name", &img.name)) {
+            if (ImGui::InputText(trc("images.name"), &img.name)) {
                 if (!HasDuplicateImageName(img.name, i)) {
                     g_configIsDirty = true;
                     if (oldImageName != img.name) {
@@ -74,7 +74,7 @@ if (ImGui::BeginTabItem(trc("tabs.images"))) {
             }
 
             std::string imgErrorKey = "img_" + img.name;
-            if (ImGui::InputText("Path", &img.path)) {
+            if (ImGui::InputText(trc("images.path"), &img.path)) {
                 ClearImageError(imgErrorKey);
                 g_configIsDirty = true;
             }
@@ -109,10 +109,10 @@ if (ImGui::BeginTabItem(trc("tabs.images"))) {
 
             ImGui::SeparatorText(trc("images.rendering"));
             if (ImGui::SliderFloat(trc("label.opacity"), &img.opacity, 0.0f, 1.0f)) g_configIsDirty = true;
-            if (ImGui::Checkbox("Pixelated Scaling", &img.pixelatedScaling)) g_configIsDirty = true;
-            if (ImGui::Checkbox("Only on my screen", &img.onlyOnMyScreen)) g_configIsDirty = true;
+            if (ImGui::Checkbox(trc("images.pixelated_scaling"), &img.pixelatedScaling)) g_configIsDirty = true;
+            if (ImGui::Checkbox(trc("images.only_on_my_screen"), &img.onlyOnMyScreen)) g_configIsDirty = true;
             if (ImGui::IsItemHovered()) {
-                ImGui::SetTooltip("When enabled, this image will only be visible to you and not captured by OBS");
+                ImGui::SetTooltip("images.tooltip.only_on_my_screen");
             }
 
             ImGui::Columns(2, "img_render", false);
